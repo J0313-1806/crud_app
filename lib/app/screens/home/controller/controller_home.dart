@@ -20,7 +20,6 @@ class HomeController extends GetxController {
 
   final doc = FirebaseFirestore.instance.collection('data');
   final storage = FirebaseStorage.instance;
-  final listKey = GlobalKey<AnimatedListState>();
   File? file;
   var filePath = ''.obs;
   String imageUrl = '';

@@ -1,5 +1,4 @@
 import 'package:crud_app/app/screens/auth/controller/controller_auth.dart';
-import 'package:crud_app/app/screens/home/home.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
@@ -33,12 +32,8 @@ class LoginPage extends StatelessWidget {
                       width: Get.width - 40,
                       child: TextFormField(
                         controller: authController.phone,
-                        // inputFormatters: [
-                        //   FilteringTextInputFormatter(
-                        //     RegExp(r'(^(?:[+0]9)?[0-9]{10,12}$)'),
-                        //     allow: true,
-                        //   ),
-                        // ],
+                        keyboardType: TextInputType.phone,
+                        maxLength: 10,
                         decoration: InputDecoration(
                           contentPadding: const EdgeInsets.all(0),
                           labelText: "Mobile Number",
@@ -65,9 +60,7 @@ class LoginPage extends StatelessWidget {
                                 color: Colors.white,
                               ),
                               controller: authController.internationalCode,
-                              inputFormatters: [
-                                FilteringTextInputFormatter.digitsOnly
-                              ],
+                              keyboardType: TextInputType.phone,
                               decoration: const InputDecoration(
                                 border: InputBorder.none,
                               ),
@@ -107,30 +100,34 @@ class LoginPage extends StatelessWidget {
                   const SizedBox(
                     height: 40,
                   ),
-                  Align(
-                    child: ElevatedButton(
-                      onPressed: authController.verifyPhone,
-                      child: authController.verifyPhoneLoader.value
-                          ? const Center(
-                              child: CircularProgressIndicator(
-                                color: Colors.white,
-                              ),
-                            )
-                          : const Text("CONTINUE"),
-                      style: ElevatedButton.styleFrom(
-                        shape: RoundedRectangleBorder(
-                          borderRadius: authController.verifyPhoneLoader.value
-                              ? BorderRadius.circular(50)
-                              : BorderRadius.circular(20),
+                  Obx(
+                    () => Align(
+                      child: ElevatedButton(
+                        onPressed: authController.verifyPhone,
+                        child: authController.verifyPhoneLoader.value
+                            ? const Center(
+                                child: CircularProgressIndicator(
+                                  color: Colors.white,
+                                ),
+                              )
+                            : const Text("CONTINUE"),
+                        style: ElevatedButton.styleFrom(
+                          shape: authController.verifyPhoneLoader.value
+                              ? const CircleBorder()
+                              : RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(20),
+                                ),
+                          fixedSize: authController.verifyCodeLoader.value
+                              ? const Size.fromRadius(22)
+                              : Size.fromWidth(Get.width / 3),
                         ),
-                        fixedSize: Size.fromWidth(Get.width / 3),
                       ),
                     ),
                   ),
-                  TextButton(
-                    onPressed: () => Get.to(() => const HomePage()),
-                    child: const Text('Skip'),
-                  ),
+                  // TextButton(
+                  //   onPressed: () => Get.to(() => const HomePage()),
+                  //   child: const Text('Skip'),
+                  // ),
                 ],
               ),
             ),

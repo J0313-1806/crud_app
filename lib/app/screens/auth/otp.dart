@@ -11,43 +11,44 @@ class OtpPage extends StatelessWidget {
     return GetBuilder<AuthController>(builder: (authController) {
       return Scaffold(
         backgroundColor: Colors.deepPurple.shade50,
-        body: Form(
-          child: ListView(
-            children: <Widget>[
-              Container(
-                margin: const EdgeInsets.fromLTRB(20, 150, 10, 50),
-                child: const Text(
-                  "Verify your Phone",
-                  style: TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                  ),
+        body: ListView(
+          children: <Widget>[
+            Container(
+              margin: const EdgeInsets.fromLTRB(20, 150, 10, 50),
+              child: const Text(
+                "Verify your Phone",
+                style: TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
                 ),
               ),
-              Pinput(
-                controller: authController.otp,
-                androidSmsAutofillMethod:
-                    AndroidSmsAutofillMethod.smsRetrieverApi,
-                length: 6,
-                pinputAutovalidateMode: PinputAutovalidateMode.onSubmit,
-                onSubmitted: authController.verifyOtp,
-                onCompleted: authController.verifyOtp,
-                defaultPinTheme: PinTheme(
-                  width: 50,
-                  height: 50,
-                  decoration: BoxDecoration(
-                    color: Colors.transparent,
-                    borderRadius: BorderRadius.circular(5),
-                    border: Border.all(
-                        // color: Colors.black,
-                        ),
-                  ),
+            ),
+            Pinput(
+              controller: authController.otp,
+              keyboardType: TextInputType.number,
+              androidSmsAutofillMethod:
+                  AndroidSmsAutofillMethod.smsRetrieverApi,
+              length: 6,
+              pinputAutovalidateMode: PinputAutovalidateMode.onSubmit,
+              onSubmitted: authController.verifyOtp,
+              onCompleted: authController.verifyOtp,
+              defaultPinTheme: PinTheme(
+                width: 50,
+                height: 50,
+                decoration: BoxDecoration(
+                  color: Colors.transparent,
+                  borderRadius: BorderRadius.circular(5),
+                  border: Border.all(
+                      // color: Colors.black,
+                      ),
                 ),
               ),
-              const SizedBox(
-                height: 40,
-              ),
-              Align(
+            ),
+            const SizedBox(
+              height: 40,
+            ),
+            Obx(
+              () => Align(
                 child: ElevatedButton(
                   onPressed: () =>
                       authController.verifyOtp(authController.otp.text),
@@ -59,17 +60,19 @@ class OtpPage extends StatelessWidget {
                         )
                       : const Text("VERIFY"),
                   style: ElevatedButton.styleFrom(
-                    shape: RoundedRectangleBorder(
-                      borderRadius: authController.verifyCodeLoader.value
-                          ? BorderRadius.circular(50)
-                          : BorderRadius.circular(20),
-                    ),
-                    fixedSize: Size.fromWidth(Get.width / 3.3),
+                    shape: authController.verifyCodeLoader.value
+                        ? const CircleBorder()
+                        : RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(20),
+                          ),
+                    fixedSize: authController.verifyCodeLoader.value
+                        ? const Size.fromRadius(22)
+                        : Size.fromWidth(Get.width / 3.3),
                   ),
                 ),
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       );
     });

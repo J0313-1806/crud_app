@@ -3,13 +3,24 @@
 import 'dart:developer';
 
 import 'package:connectivity_plus/connectivity_plus.dart';
+import 'package:crud_app/app/screens/auth/login.dart';
 import 'package:crud_app/app/screens/auth/otp.dart';
 import 'package:crud_app/app/screens/home/home.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class AuthController extends GetxController {
+  @override
+  void onInit() {
+    super.onInit();
+    final user = FirebaseAuth.instance.currentUser;
+    if (user != null) {
+      alreadyAuthenticated(true);
+    }
+  }
+
   @override
   onReady() async {
     super.onReady();
@@ -17,10 +28,6 @@ class AuthController extends GetxController {
     otp.text = "";
     internationalCode.text = '+91';
     connectionStatus.value = await fetchConnectionStatus();
-    final user = FirebaseAuth.instance.currentUser;
-    if (user != null) {
-      alreadyAuthenticated(true);
-    }
   }
 
   final formKey = GlobalKey<FormState>();
@@ -36,6 +43,7 @@ class AuthController extends GetxController {
   Future<void> verifyPhone() async {
     try {
       verifyPhoneLoader(true);
+
       if (connectionStatus.value) {
         if (formKey.currentState!.validate()) {
           log('phone: ' + phone.text);
@@ -71,6 +79,7 @@ class AuthController extends GetxController {
   Future<void> verifyOtp(String value) async {
     try {
       verifyCodeLoader(true);
+
       await FirebaseAuth.instance
           .signInWithCredential(
         PhoneAuthProvider.credential(
@@ -85,7 +94,27 @@ class AuthController extends GetxController {
     } catch (e) {
       print(e.toString());
     } finally {
-      verifyCodeLoader(true);
+      verifyCodeLoader(false);
+    }
+  }
+
+  RxBool signingOff = RxBool(false);
+  void signOut() async {
+    try {
+      signingOff(true);
+
+      if (alreadyAuthenticated.value) {
+        await FirebaseAuth.instance
+            .signOut()
+            .whenComplete(() => Get.off(() => const LoginPage()));
+      } else {
+        Get.back();
+        Get.back();
+      }
+    } catch (e) {
+      print(e.toString());
+    } finally {
+      signingOff(false);
     }
   }
 
@@ -96,5 +125,13 @@ class AuthController extends GetxController {
     } else {
       return true;
     }
+  }
+
+  @override
+  void dispose() {
+    phone.dispose();
+    otp.dispose();
+    internationalCode.dispose();
+    super.dispose();
   }
 }

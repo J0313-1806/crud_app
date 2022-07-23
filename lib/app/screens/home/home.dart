@@ -100,12 +100,13 @@ class HomePage extends StatelessWidget {
                                     ),
                                     errorWidget: (context, image, child) =>
                                         image.isEmpty
-                                            ? Image.asset(
-                                                "assets/index.jpg",
+                                            ? const Center(
+                                                child: Text("No Data"))
+                                            : Image.asset(
+                                                "assets/not.png",
                                                 fit: BoxFit.cover,
                                                 height: 100,
-                                              )
-                                            : const Text("Bad exception"),
+                                              ),
                                   ),
                                 ),
                               ),

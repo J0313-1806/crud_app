@@ -1,6 +1,7 @@
 import 'package:crud_app/app/screens/auth/controller/controller_auth.dart';
 import 'package:crud_app/app/screens/home/home.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 
 class LoginPage extends StatelessWidget {
@@ -39,10 +40,41 @@ class LoginPage extends StatelessWidget {
                         //   ),
                         // ],
                         decoration: InputDecoration(
+                          contentPadding: const EdgeInsets.all(0),
                           labelText: "Mobile Number",
-                          suffixIcon: const Icon(Icons.phone_outlined),
-                          prefixIcon: IconButton(
-                              onPressed: () {}, icon: const Text('+91')),
+                          suffixIcon: IconButton(
+                            onPressed: () =>
+                                authController.internationalCodeEdit.toggle(),
+                            icon: const Icon(Icons.phone_outlined),
+                          ),
+                          prefixIcon: Container(
+                            margin: const EdgeInsets.fromLTRB(0, 0, 10, 0),
+                            // padding: const EdgeInsets.fromLTRB(5, 0, 0, 0),
+                            width: 15,
+                            decoration: const BoxDecoration(
+                              color: Colors.deepPurple,
+                              borderRadius: BorderRadius.only(
+                                topRight: Radius.circular(5),
+                                bottomRight: Radius.circular(5),
+                              ),
+                            ),
+                            child: TextField(
+                              cursorColor: Colors.white,
+                              textAlign: TextAlign.center,
+                              style: const TextStyle(
+                                color: Colors.white,
+                              ),
+                              controller: authController.internationalCode,
+                              inputFormatters: [
+                                FilteringTextInputFormatter.digitsOnly
+                              ],
+                              decoration: const InputDecoration(
+                                border: InputBorder.none,
+                              ),
+                              readOnly:
+                                  authController.internationalCodeEdit.value,
+                            ),
+                          ),
                           focusedBorder: const OutlineInputBorder(
                             borderSide: BorderSide(
                               color: Colors.black54,
@@ -55,8 +87,12 @@ class LoginPage extends StatelessWidget {
                           ),
                         ),
                         validator: (value) {
+                          RegExp pattern =
+                              RegExp(r'(^(?:[+0]9)?[0-9]{10,12}$)');
+
                           if (value != null && value.isNotEmpty) {
-                            if (value.length != 10) {
+                            if (value.length != 10 &&
+                                !pattern.hasMatch(value)) {
                               return "Incorrect Number";
                             } else {
                               return null;
@@ -74,10 +110,18 @@ class LoginPage extends StatelessWidget {
                   Align(
                     child: ElevatedButton(
                       onPressed: authController.verifyPhone,
-                      child: const Text("CONTINUE"),
+                      child: authController.verifyPhoneLoader.value
+                          ? const Center(
+                              child: CircularProgressIndicator(
+                                color: Colors.white,
+                              ),
+                            )
+                          : const Text("CONTINUE"),
                       style: ElevatedButton.styleFrom(
                         shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(20),
+                          borderRadius: authController.verifyPhoneLoader.value
+                              ? BorderRadius.circular(50)
+                              : BorderRadius.circular(20),
                         ),
                         fixedSize: Size.fromWidth(Get.width / 3),
                       ),

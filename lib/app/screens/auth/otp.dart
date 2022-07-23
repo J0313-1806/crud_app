@@ -51,10 +51,18 @@ class OtpPage extends StatelessWidget {
                 child: ElevatedButton(
                   onPressed: () =>
                       authController.verifyOtp(authController.otp.text),
-                  child: const Text("VERIFY"),
+                  child: authController.verifyCodeLoader.value
+                      ? const Center(
+                          child: CircularProgressIndicator(
+                            color: Colors.white,
+                          ),
+                        )
+                      : const Text("VERIFY"),
                   style: ElevatedButton.styleFrom(
                     shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(20),
+                      borderRadius: authController.verifyCodeLoader.value
+                          ? BorderRadius.circular(50)
+                          : BorderRadius.circular(20),
                     ),
                     fixedSize: Size.fromWidth(Get.width / 3.3),
                   ),

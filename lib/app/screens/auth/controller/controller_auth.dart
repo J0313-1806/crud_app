@@ -1,3 +1,5 @@
+// ignore_for_file: avoid_print
+
 import 'dart:developer';
 
 import 'package:connectivity_plus/connectivity_plus.dart';
@@ -13,21 +15,32 @@ class AuthController extends GetxController {
     super.onReady();
     phone.text = "";
     otp.text = "";
+    internationalCode.text = '+91';
     connectionStatus.value = await fetchConnectionStatus();
+    final user = await FirebaseAuth.instance.currentUser;
+    if (user != null) {
+      alreadyAuthenticated(true);
+    }
   }
 
   final formKey = GlobalKey<FormState>();
   RxBool connectionStatus = RxBool(false);
+  RxBool alreadyAuthenticated = RxBool(false);
   TextEditingController phone = TextEditingController();
   TextEditingController otp = TextEditingController();
+  TextEditingController internationalCode = TextEditingController();
+  RxBool internationalCodeEdit = RxBool(false);
   RxString verId = RxString('');
 
+  RxBool verifyPhoneLoader = RxBool(false);
   Future<void> verifyPhone() async {
-    if (connectionStatus.value) {
-      if (formKey.currentState!.validate()) {
-        log('phone: ' + phone.text);
-        await FirebaseAuth.instance.verifyPhoneNumber(
-            phoneNumber: '+91' + phone.text,
+    try {
+      verifyPhoneLoader(true);
+      if (connectionStatus.value) {
+        if (formKey.currentState!.validate()) {
+          log('phone: ' + phone.text);
+          await FirebaseAuth.instance.verifyPhoneNumber(
+            phoneNumber: '+' + internationalCode.text + phone.text,
             verificationCompleted: (PhoneAuthCredential credential) {
               Get.snackbar("Done", "Verification complete!");
             },
@@ -39,27 +52,41 @@ class AuthController extends GetxController {
               Get.snackbar("Code Sent", "Check your SMS");
               Get.to(() => const OtpPage());
             },
-            codeAutoRetrievalTimeout: (String codeAutoRetrievalTimeout) {});
+            codeAutoRetrievalTimeout: (String codeAutoRetrievalTimeout) {},
+          );
+        } else {
+          Get.snackbar("oops!", "Wrong validation try again");
+        }
       } else {
-        Get.snackbar("oops!", "Wrong validation try again");
+        Get.snackbar("oops!", "No Internet connection");
       }
-    } else {
-      Get.snackbar("oops!", "No Internet connection");
+    } catch (e) {
+      print(e.toString());
+    } finally {
+      verifyPhoneLoader(false);
     }
   }
 
+  RxBool verifyCodeLoader = RxBool(false);
   Future<void> verifyOtp(String value) async {
-    await FirebaseAuth.instance
-        .signInWithCredential(
-      PhoneAuthProvider.credential(
-        verificationId: verId.value,
-        smsCode: value,
-      ),
-    )
-        .whenComplete(() {
-      otp.clear();
-      Get.off(() => const HomePage());
-    });
+    try {
+      verifyCodeLoader(true);
+      await FirebaseAuth.instance
+          .signInWithCredential(
+        PhoneAuthProvider.credential(
+          verificationId: verId.value,
+          smsCode: value,
+        ),
+      )
+          .whenComplete(() {
+        otp.clear();
+        Get.off(() => const HomePage());
+      });
+    } catch (e) {
+      print(e.toString());
+    } finally {
+      verifyCodeLoader(true);
+    }
   }
 
   static Future<bool> fetchConnectionStatus() async {

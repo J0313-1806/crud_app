@@ -103,6 +103,7 @@ class HomeController extends GetxController {
                     .pickFiles(type: FileType.image, allowCompression: true);
                 if (result != null) {
                   final path = result.files.single.path;
+                  final fileName = result.files.single.name;
                   filePath(path);
                   file = File(path!);
                   // file?.value = f;
@@ -118,6 +119,7 @@ class HomeController extends GetxController {
                   }
                   imageUrl = await task.ref.getDownloadURL();
                   log(imageUrl);
+                  Get.snackbar('Image Selected!', 'Filename: $fileName');
                 } else {
                   return;
                 }

@@ -17,7 +17,7 @@ class AuthController extends GetxController {
     otp.text = "";
     internationalCode.text = '+91';
     connectionStatus.value = await fetchConnectionStatus();
-    final user = await FirebaseAuth.instance.currentUser;
+    final user = FirebaseAuth.instance.currentUser;
     if (user != null) {
       alreadyAuthenticated(true);
     }

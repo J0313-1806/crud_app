@@ -31,10 +31,7 @@ class HomeController extends GetxController {
   Future<TaskSnapshot?> uploadFile({File? file, String? fileName}) async {
     try {
       final task = await storage.ref(fileName).putFile(file!);
-
       return task;
-      // String s = await ff.ref.getDownloadURL();
-      // log('link: $s');
     } catch (e) {
       // ignore: avoid_print
       print(e.toString());
@@ -62,7 +59,7 @@ class HomeController extends GetxController {
       });
     }
     imageUrl = '';
-    file = null;
+    filePath.value = '';
     Get.back();
   }
 
@@ -78,10 +75,16 @@ class HomeController extends GetxController {
     text.contains("Edit Item")
         ? desc.text = tempData[index!].desc
         : desc.clear();
-    text.contains("Edit Item") ? file = null : null;
+    text.contains("Edit Item") ? filePath.value = '' : filePath;
 
     Get.bottomSheet(
-      EditBottomSheet(text: text, index: index!),
+      GetBuilder<HomeController>(builder: (homeController) {
+        return EditBottomSheet(
+          text: text,
+          index: index,
+          homeController: homeController,
+        );
+      }),
       backgroundColor: Colors.white,
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.only(

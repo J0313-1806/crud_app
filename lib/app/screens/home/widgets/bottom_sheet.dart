@@ -8,43 +8,46 @@ import 'package:get/get.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 
 class EditBottomSheet extends StatelessWidget {
-  const EditBottomSheet({Key? key, required this.text, required this.index})
+  const EditBottomSheet(
+      {Key? key, required this.text, this.index, required this.homeController})
       : super(key: key);
 
   final String text;
-  final int index;
-  // static final HomeController homeController = Get.find();
+  final int? index;
+  final HomeController homeController;
 
   @override
   Widget build(BuildContext context) {
-    return GetX<HomeController>(builder: (homeController) {
-      return Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: ListView(
-          shrinkWrap: true,
+    return Padding(
+      padding: const EdgeInsets.all(16.0),
+      child: ListView(
+        shrinkWrap: true,
 
-          // crossAxisAlignment: CrossAxisAlignment.start,
-          padding: const EdgeInsets.all(10),
-          children: [
-            Text(
-              text,
-              style: const TextStyle(
-                fontSize: 20,
-                fontWeight: FontWeight.bold,
-              ),
+        // crossAxisAlignment: CrossAxisAlignment.start,
+        padding: const EdgeInsets.all(10),
+        children: [
+          Text(
+            text,
+            style: const TextStyle(
+              fontSize: 20,
+              fontWeight: FontWeight.bold,
             ),
-            const SizedBox(
-              height: 10,
-            ),
-            InkWell(
+          ),
+          const SizedBox(
+            height: 10,
+          ),
+          Obx(
+            () => InkWell(
               onTap: () async {
                 final result = await FilePicker.platform
                     .pickFiles(type: FileType.image, allowCompression: true);
+                // result?.files.isEmpty;
                 if (result != null) {
                   final path = result.files.single.path;
                   final fileName = result.files.single.name;
                   homeController.filePath(path);
                   homeController.file = File(path!);
+
                   // file?.value = f;
                   // result.files.isNotEmpty
                   //     ? Fluttertoast.showToast(msg: 'Image selected!')
@@ -86,9 +89,10 @@ class EditBottomSheet extends StatelessWidget {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    text.contains("Edit Item") && homeController.file == null
+                    text.contains("Edit Item") &&
+                            homeController.filePath.isEmpty
                         ? CachedNetworkImage(
-                            imageUrl: homeController.tempData[index].image,
+                            imageUrl: homeController.tempData[index!].image,
                             progressIndicatorBuilder:
                                 (context, str, download) => Center(
                               child: CircularProgressIndicator(
@@ -97,7 +101,7 @@ class EditBottomSheet extends StatelessWidget {
                             ),
                             height: 100,
                           )
-                        : homeController.file == null
+                        : homeController.filePath.isEmpty
                             ? Image.asset(
                                 homeController.tempImage,
                                 fit: BoxFit.cover,
@@ -105,7 +109,7 @@ class EditBottomSheet extends StatelessWidget {
                               )
                             : Image.file(
                                 File(homeController.filePath.value),
-                                fit: BoxFit.cover,
+                                fit: BoxFit.contain,
                                 height: 100,
                               ),
                     Container(
@@ -131,85 +135,85 @@ class EditBottomSheet extends StatelessWidget {
                 ),
               ),
             ),
-            const SizedBox(
-              height: 20,
-            ),
-            TextFormField(
-              controller: homeController.title,
-              decoration: const InputDecoration(
-                labelText: "Title",
-                focusedBorder: OutlineInputBorder(
-                  borderSide: BorderSide(
-                    color: Colors.black54,
-                  ),
-                ),
-                border: OutlineInputBorder(
-                  borderSide: BorderSide(
-                    color: Colors.black54,
-                  ),
+          ),
+          const SizedBox(
+            height: 20,
+          ),
+          TextFormField(
+            controller: homeController.title,
+            decoration: const InputDecoration(
+              labelText: "Title",
+              focusedBorder: OutlineInputBorder(
+                borderSide: BorderSide(
+                  color: Colors.black54,
                 ),
               ),
-              validator: (value) {
-                if (value != null && value.isNotEmpty) {
-                  if (value.length != 10) {
-                    return "Incorrect Number";
-                  } else {
-                    return "";
-                  }
+              border: OutlineInputBorder(
+                borderSide: BorderSide(
+                  color: Colors.black54,
+                ),
+              ),
+            ),
+            validator: (value) {
+              if (value != null && value.isNotEmpty) {
+                if (value.length != 10) {
+                  return "Incorrect Number";
                 } else {
-                  return "Field cannot be Empty!";
+                  return "";
                 }
-              },
-            ),
-            const SizedBox(
-              height: 10,
-            ),
-            TextFormField(
-              controller: homeController.desc,
-              decoration: const InputDecoration(
-                labelText: "Description",
-                focusedBorder: OutlineInputBorder(
-                  borderSide: BorderSide(
-                    color: Colors.black54,
-                  ),
-                ),
-                border: OutlineInputBorder(
-                  borderSide: BorderSide(
-                    color: Colors.black54,
-                  ),
+              } else {
+                return "Field cannot be Empty!";
+              }
+            },
+          ),
+          const SizedBox(
+            height: 10,
+          ),
+          TextFormField(
+            controller: homeController.desc,
+            decoration: const InputDecoration(
+              labelText: "Description",
+              focusedBorder: OutlineInputBorder(
+                borderSide: BorderSide(
+                  color: Colors.black54,
                 ),
               ),
-              validator: (value) {
-                if (value != null && value.isNotEmpty) {
-                  if (value.length != 10) {
-                    return "Incorrect Number";
-                  } else {
-                    return "";
-                  }
+              border: OutlineInputBorder(
+                borderSide: BorderSide(
+                  color: Colors.black54,
+                ),
+              ),
+            ),
+            validator: (value) {
+              if (value != null && value.isNotEmpty) {
+                if (value.length != 10) {
+                  return "Incorrect Number";
                 } else {
-                  return "Field cannot be Empty!";
+                  return "";
                 }
-              },
+              } else {
+                return "Field cannot be Empty!";
+              }
+            },
+          ),
+          const SizedBox(
+            height: 20,
+          ),
+          ElevatedButton(
+            onPressed: () => homeController.addData(
+              addData: text.contains("Edit Item") ? false : true,
+              index: text.contains("Edit Item") ? index : null,
             ),
-            const SizedBox(
-              height: 20,
-            ),
-            ElevatedButton(
-              onPressed: () => homeController.addData(
-                addData: text.contains("Edit Item") ? false : true,
-                index: text.contains("Edit Item") ? index : null,
+            child: const Text("Save"),
+            style: ElevatedButton.styleFrom(
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(20),
               ),
-              child: const Text("Save"),
-              style: ElevatedButton.styleFrom(
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(20),
-                ),
-                fixedSize: Size.fromWidth(Get.width / 3),
-              ),
+              fixedSize: Size.fromWidth(Get.width / 3),
             ),
-          ],
-        ),
-      );
-    });
+          ),
+        ],
+      ),
+    );
   }
 }

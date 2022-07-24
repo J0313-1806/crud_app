@@ -123,10 +123,6 @@ class LoginPage extends StatelessWidget {
                       ),
                     ),
                   ),
-                  // TextButton(
-                  //   onPressed: () => Get.to(() => const HomePage()),
-                  //   child: const Text('Skip'),
-                  // ),
                 ],
               ),
             ),

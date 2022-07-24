@@ -25,8 +25,6 @@ class EditBottomSheet extends StatelessWidget {
         child: Obx(
           () => ListView(
             shrinkWrap: true,
-
-            // crossAxisAlignment: CrossAxisAlignment.start,
             padding: const EdgeInsets.all(10),
             children: [
               Text(
@@ -70,13 +68,6 @@ class EditBottomSheet extends StatelessWidget {
                     Get.snackbar(
                       'Image Uploaded!',
                       'Filename: $fileName',
-                      // showProgressIndicator: homeController.bytesTransfer ==
-                      //         homeController.totalBytes
-                      //     ? true
-                      //     : false,
-                      // progressIndicatorValueColor:
-                      //     const AlwaysStoppedAnimation<Color>(
-                      //         Colors.deepPurple),
                       backgroundColor: Colors.white,
                     );
                     homeController.imageUrl = await task.ref.getDownloadURL();

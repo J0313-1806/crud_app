@@ -7,7 +7,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 
 List<Model> modelFromJson(String str) =>
     List<Model>.from(json.decode(str).map((x) => Model.fromJson(x)));
-// List<SunTimeModel> sunTimeModelFromJson(String str) => List<SunTimeModel>.from(json.decode(str).map((x) => SunTimeModel.fromJson(x)));
 
 class Model {
   Model({

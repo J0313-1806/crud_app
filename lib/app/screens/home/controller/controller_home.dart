@@ -26,8 +26,6 @@ class HomeController extends GetxController {
   String imageUrl = '';
   String tempImage = "assets/index.jpg";
   RxBool imageUploading = RxBool(false);
-  // RxInt bytesTransfer = RxInt(0);
-  // RxInt totalBytes = RxInt(-1);
   TextEditingController title = TextEditingController();
   TextEditingController desc = TextEditingController();
   RxList<Model> tempData = RxList([]);

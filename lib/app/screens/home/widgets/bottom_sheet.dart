@@ -53,11 +53,10 @@ class EditBottomSheet extends StatelessWidget {
                   // result?.files.isEmpty;
                   if (result != null) {
                     final path = result.files.single.path;
-                    final fileName = result.files.single.name;
+                    // final fileName = result.files.single.name;
                     homeController.filePath(path);
                     homeController.file = File(path!);
 
-                    // file?.value = f;
                     result.files.isNotEmpty
                         ? Get.snackbar(
                             'Image Uploading!',

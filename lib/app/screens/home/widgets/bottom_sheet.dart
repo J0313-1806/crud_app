@@ -59,7 +59,11 @@ class EditBottomSheet extends StatelessWidget {
 
                     // file?.value = f;
                     result.files.isNotEmpty
-                        ? Fluttertoast.showToast(msg: 'Image uploading!')
+                        ? Get.snackbar(
+                            'Image Uploading!',
+                            'Wait a moment..',
+                            backgroundColor: Colors.white,
+                          )
                         : Fluttertoast.showToast(msg: 'No Image selected');
                     final task = await homeController.uploadFile(
                         file: homeController.file,
@@ -74,11 +78,6 @@ class EditBottomSheet extends StatelessWidget {
                       return;
                     }
 
-                    Get.snackbar(
-                      'Image Uploaded!',
-                      'Filename: $fileName',
-                      backgroundColor: Colors.white,
-                    );
                     homeController.imageUrl = await task.ref.getDownloadURL();
                     log(homeController.imageUrl);
                   } else {

@@ -19,47 +19,61 @@ class HomeController extends GetxController {
 
   final doc = FirebaseFirestore.instance.collection('data');
   final storage = FirebaseStorage.instance;
+  final homeKey = GlobalKey<FormState>();
   File? file;
   File? newFile;
   var filePath = ''.obs;
   String imageUrl = '';
   String tempImage = "assets/index.jpg";
+  RxBool imageUploading = RxBool(false);
+  // RxInt bytesTransfer = RxInt(0);
+  // RxInt totalBytes = RxInt(-1);
   TextEditingController title = TextEditingController();
   TextEditingController desc = TextEditingController();
   RxList<Model> tempData = RxList([]);
 
   Future<TaskSnapshot?> uploadFile({File? file, String? fileName}) async {
     try {
+      imageUploading(true);
       final task = await storage.ref(fileName).putFile(file!);
+      // bytesTransfer(task.bytesTransferred);
+
       return task;
     } catch (e) {
       // ignore: avoid_print
       print(e.toString());
+    } finally {
+      imageUploading(false);
     }
     return null;
   }
 
   Future<void> addData({required bool addData, int? index}) async {
     final _doc = doc.doc();
-    if (addData) {
-      Model modelData = Model(
-        id: _doc.id,
-        title: title.text,
-        desc: desc.text,
-        image: imageUrl.isEmpty ? tempImage : imageUrl,
-        date: DateTime.now(),
-      );
-      _doc.set(modelData.toJson());
+    if (homeKey.currentState!.validate()) {
+      if (addData) {
+        Model modelData = Model(
+          id: _doc.id,
+          title: title.text,
+          desc: desc.text,
+          image: imageUrl.isEmpty ? '' : imageUrl,
+          date: DateTime.now(),
+        );
+        _doc.set(modelData.toJson());
+      } else {
+        doc.doc(tempData[index!].id).update({
+          'title': title.text,
+          'desc': desc.text,
+          'image': imageUrl.isEmpty ? tempData[index].image : imageUrl,
+          'date': DateTime.now(),
+        });
+      }
     } else {
-      doc.doc(tempData[index!].id).update({
-        'title': title.text,
-        'desc': desc.text,
-        'image': imageUrl.isEmpty ? tempData[index].image : imageUrl,
-        'date': DateTime.now(),
-      });
+      Get.snackbar('Fields Empty', 'Please fill title and description');
     }
     imageUrl = '';
     filePath.value = '';
+
     Get.back();
   }
 

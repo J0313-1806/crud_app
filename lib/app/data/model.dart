@@ -27,7 +27,7 @@ class Model {
         id: json["id"] == null ? '' : json["id"],
         title: json["title"] == null ? '' : json["title"],
         desc: json["desc"] == null ? '' : json["desc"],
-        image: json["image"] == null ? "assets/index.jpg" : json["image"],
+        image: json["image"] == null ? "" : json["image"],
         date: json["date"] == null
             ? DateTime.now()
             : DateTime.fromMillisecondsSinceEpoch(

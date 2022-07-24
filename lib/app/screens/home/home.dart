@@ -105,27 +105,26 @@ class HomePage extends StatelessWidget {
                                       topLeft: Radius.circular(10),
                                       bottomLeft: Radius.circular(10),
                                     ),
-                                    child: CachedNetworkImage(
-                                      height: 100,
-                                      // width: 90,
-                                      imageUrl:
-                                          homeController.tempData[index].image,
-                                      progressIndicatorBuilder:
-                                          (context, str, download) => Center(
-                                        child: CircularProgressIndicator(
-                                          value: download.progress,
-                                        ),
-                                      ),
-                                      errorWidget: (context, image, child) =>
-                                          image.isEmpty
-                                              ? const Center(
-                                                  child: Text("No Data"))
-                                              : Image.asset(
-                                                  "assets/not.png",
-                                                  fit: BoxFit.cover,
-                                                  height: 100,
-                                                ),
-                                    ),
+                                    child: homeController
+                                            .tempData[index].image.isNotEmpty
+                                        ? CachedNetworkImage(
+                                            height: 100,
+                                            // width: 90,
+                                            imageUrl: homeController
+                                                .tempData[index].image,
+                                            progressIndicatorBuilder:
+                                                (context, str, download) =>
+                                                    Center(
+                                              child: CircularProgressIndicator(
+                                                value: download.progress,
+                                              ),
+                                            ),
+                                          )
+                                        : Image.asset(
+                                            "assets/not.png",
+                                            fit: BoxFit.cover,
+                                            height: 100,
+                                          ),
                                   ),
                                 ),
                                 Expanded(

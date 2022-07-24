@@ -9,10 +9,15 @@ import 'package:cached_network_image/cached_network_image.dart';
 
 class EditBottomSheet extends StatelessWidget {
   const EditBottomSheet(
-      {Key? key, required this.text, this.index, required this.homeController})
+      {Key? key,
+      required this.text,
+      required this.createdAt,
+      this.index,
+      required this.homeController})
       : super(key: key);
 
   final String text;
+  final String createdAt;
   final int? index;
   final HomeController homeController;
 
@@ -33,6 +38,10 @@ class EditBottomSheet extends StatelessWidget {
                   fontSize: 20,
                   fontWeight: FontWeight.bold,
                 ),
+              ),
+              Align(
+                alignment: Alignment.centerRight,
+                child: Text(createdAt),
               ),
               const SizedBox(
                 height: 10,

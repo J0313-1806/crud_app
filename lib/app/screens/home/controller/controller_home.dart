@@ -27,6 +27,7 @@ class HomeController extends GetxController {
   String tempImage = "assets/index.jpg";
   RxBool imageUploading = RxBool(false);
   TextEditingController title = TextEditingController();
+  RxString createdAt = RxString('');
   TextEditingController desc = TextEditingController();
   RxList<Model> tempData = RxList([]);
 
@@ -86,12 +87,16 @@ class HomeController extends GetxController {
     text.contains("Edit Item")
         ? desc.text = tempData[index!].desc
         : desc.clear();
+    text.contains("Edit Item")
+        ? createdAt.value = tempData[index!].date.toString().substring(0, 10)
+        : createdAt('');
     text.contains("Edit Item") ? filePath.value = '' : filePath;
 
     Get.bottomSheet(
       GetBuilder<HomeController>(builder: (homeController) {
         return EditBottomSheet(
           text: text,
+          createdAt: createdAt.string,
           index: index,
           homeController: homeController,
         );

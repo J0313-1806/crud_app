@@ -66,13 +66,12 @@ class HomeController extends GetxController {
           'date': DateTime.now(),
         });
       }
+      Get.back();
     } else {
       Get.snackbar('Fields Empty', 'Please fill title and description');
     }
     imageUrl = '';
     filePath.value = '';
-
-    Get.back();
   }
 
   Stream<List<Model>> readData() => doc

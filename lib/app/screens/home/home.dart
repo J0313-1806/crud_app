@@ -51,7 +51,9 @@ class HomePage extends StatelessWidget {
                         return Dismissible(
                           key: UniqueKey(),
                           background: Container(
+                            margin: const EdgeInsets.fromLTRB(0, 0, 0, 10),
                             padding: const EdgeInsets.all(10),
+                            height: 100,
                             decoration: BoxDecoration(
                               color: Colors.red,
                               borderRadius: BorderRadius.circular(
